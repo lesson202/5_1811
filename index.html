@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Вставлення текстових об’єктів на слайди</title>
+<style>
+:root{--bg:#f6f2e9;--card:#ffffff;--ink:#1b2540;--muted:#5a6482;--line:#ddd6c6;--accent:#0f7b83;--accent-ink:#ffffff;--soft:#d9f1f2;--ok:#1d6b3a;--okbg:#dff3e6;--bad:#9b2c2c;--badbg:#fde4e1;--input:#fbf9f4}
+@media (prefers-color-scheme:dark){:root{--bg:#121a2f;--card:#1c2745;--ink:#f1eee6;--muted:#aab3cc;--line:#37436b;--accent:#6fd6dc;--accent-ink:#06383c;--soft:#18444a;--ok:#8fe0ac;--okbg:#1c3a2a;--bad:#ffb3aa;--badbg:#4a2326;--input:#16203a}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Nunito","Segoe UI",Arial,sans-serif;font-size:18px;line-height:1.55;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+main{max-width:940px;margin:0 auto;padding:12px 16px 80px}
+h1,h2,h3{font-family:"Rubik","Segoe UI",Arial,sans-serif;line-height:1.2;margin:0}
+.top{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line);padding:8px 16px;padding-top:calc(8px + env(safe-area-inset-top,0px))}
+.top .row{max-width:940px;margin:0 auto;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.bar{flex:1;min-width:140px;height:10px;background:var(--soft);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+.small{font-size:15px;color:var(--muted)}
+.hero{background:linear-gradient(135deg,#0f7b83,#1b2540);color:#fff;border-radius:24px;padding:26px;margin:10px 0 18px}
+.hero h1{font-size:30px;margin-bottom:6px}
+.badge{display:inline-block;background:rgba(255,255,255,.2);border-radius:99px;padding:2px 14px;font-weight:700;font-size:15px;margin-bottom:8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;margin:0 0 18px}
+.card.done{border-color:var(--ok)}
+.card h2{font-size:23px;margin:4px 0 8px}
+.tag{display:inline-block;background:var(--soft);font-weight:700;font-size:14px;padding:2px 12px;border-radius:99px;margin-right:6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin:10px 0}
+.box{background:var(--soft);border-radius:14px;padding:12px 16px}
+.box b{display:block;margin-bottom:2px}
+ul,ol{padding-left:22px;margin:6px 0}li{margin:4px 0}
+label.f{display:block;margin:10px 0}label.f>span{display:block;font-weight:700;margin-bottom:4px}
+input[type=text],input[type=url],textarea,select{font:inherit;width:100%;padding:9px 12px;border-radius:12px;border:1px solid var(--line);background:var(--input);color:var(--ink)}
+textarea{min-height:70px;resize:vertical}
+label.opt{display:flex;gap:10px;align-items:flex-start;padding:7px 10px;border:1px solid var(--line);border-radius:12px;margin:6px 0;cursor:pointer}
+label.opt input{width:20px;height:20px;margin-top:3px;flex:none;accent-color:var(--accent)}
+.it{border:1px solid var(--line);border-radius:14px;padding:10px 14px;margin:10px 0}
+.it>p{margin:0 0 6px;font-weight:700}
+.it code{white-space:pre-wrap;font-family:Consolas,monospace;background:var(--soft);padding:2px 8px;border-radius:8px;display:inline-block}
+.it.ok{background:var(--okbg);border-color:var(--ok)}.it.bad{background:var(--badbg);border-color:var(--bad)}
+.fb{font-size:16px;font-weight:600;margin:6px 0 0}.it.ok .fb{color:var(--ok)}.it.bad .fb{color:var(--bad)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips label{display:flex;gap:8px;align-items:center;border:1px solid var(--line);border-radius:99px;padding:5px 14px;cursor:pointer}
+.chips input{accent-color:var(--accent)}
+button{font:inherit;font-weight:700;background:var(--accent);color:var(--accent-ink);border:0;border-radius:12px;padding:10px 20px;cursor:pointer;margin:8px 8px 0 0}
+button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.res{font-weight:700;margin-top:8px}
+.slide{position:relative;aspect-ratio:16/9;border-radius:8px;border:2px solid #9aa3bf;overflow:hidden;background:#fff;color:#1b2540;padding:3% 4%;max-width:600px}
+.slide .h{font-weight:800;font-size:22px}
+.slide.click [data-o]{cursor:pointer;border-radius:6px}
+.slide.click [data-o]:hover{outline:2px dashed #0f7b83}
+.slide .g{outline:3px solid #1d6b3a;background:rgba(29,107,58,.12)}
+.wa{font-family:Impact,"Arial Black",sans-serif;font-size:30px;letter-spacing:2px;background:linear-gradient(90deg,#ff7a18,#af002d);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-stroke:1px #1b2540;display:inline-block}
+.sh{margin-top:8px;border:2px dashed #9aa3bf;padding:4px 10px;display:inline-block;font-size:15px}
+.ph{border:1px dashed #9aa3bf;padding:2px 6px}
+@media print{.top,button,.noprint{display:none!important}body{background:#fff;color:#000}.card{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="top"><div class="row"><b id="who">Текстові об’єкти</b><div class="bar"><i id="fill"></i></div><span class="small" id="prog"></span></div></div>
+<main id="app"></main>
+<script>
+var LS='tekst_5kl_v1',storageOk=true;
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+var state={a:{},c:{},name:'',cls:''};
+try{var s=localStorage.getItem(LS);if(s)state=Object.assign(state,JSON.parse(s))}catch(e){storageOk=false}
+function save(){try{localStorage.setItem(LS,JSON.stringify(state))}catch(e){storageOk=false}}
+
+/* ---------- data ---------- */
+var T1=[['ph','поле заголовка макета'],['wa','об’єкт WordArt'],['tb','додаткове текстове поле (підпис під зображенням)'],['body','поле тексту макета (список)']];
+var PICKS={
+ T2:{ico:'🧩',title:'2. Який текстовий об’єкт обрати?',min:3,intro:'Для кожної ситуації обери найкращий текстовий об’єкт.',
+  labels:['Поле заголовка чи підзаголовка макета','Поле тексту макета','Текстове поле','WordArt'],
+  items:[['Назва слайда',0],['Підпис під фото в будь-якому місці слайда',2],['Виділити головне слово «Космос» художнім стилем',3],['Список із трьох пунктів на слайді з макетом «Заголовок і текст»',1],['Прізвище автора на титульному слайді',0]],
+  why:['Заголовок вводять у поле заголовка макета.','Текстове поле можна розмістити де завгодно, зокрема під зображенням.','WordArt — текст із художнім оформленням для виділення головного.','Список вводять у поле тексту макета.','Відомості про автора вводять у підзаголовок титульного слайда.']},
+ T3:{ico:'⌨️',title:'3. Коректор: правила набору тексту',min:4,intro:'Познач, чи правильно набрано текст. Пропуски дивись уважно.',mono:true,
+  labels:['Правильно','З помилкою'],
+  items:[['Слайд має заголовок , текст і зображення.',1],['Слайд має заголовок, текст і зображення.',0],['( Карпати ) — гори України.',1],['Говерла — найвища гора України.',0],['південно - східний вітер',1],['«Мій улюблений спорт»',0]],
+  why:['Перед розділовим знаком пропуск не ставиться.','Після коми — один пропуск.','Після відкриваючої і перед закриваючою дужкою пропуск не ставиться.','Тире вводять із пропусками навколо.','Дефіс у словах вводять без пропусків.','Лапки без пропусків усередині — правильно.']},
+ T5:{ico:'🖱️',title:'5. Дії з текстовим об’єктом',min:2,intro:'Що станеться, якщо виконати дію?',
+  labels:['Перемістити','Змінити розмір','Повернути','Видалити'],
+  items:[['Потягнути за межу вибраного об’єкта',0],['Потягнути за маркер у куті об’єкта',1],['Потягнути за круглий маркер обертання',2],['Вибрати об’єкт і натиснути Delete',3]],
+  why:['Перетягування за межу переміщує об’єкт.','Маркери на межі й у кутах змінюють розмір.','Маркер обертання повертає об’єкт на будь-який кут.','Delete видаляє вибраний об’єкт.']}
+};
+var T4=[['Накреслити поле потрібного розміру на слайді',2],['Клацнути на слайді поза текстовим полем',4],['Вибрати Вставлення → Текстове поле',1],['Увести текст',3]];
+var STEPS=[
+ 'Відкрий Google Презентації (slides.google.com або через Google Classroom) і створи нову презентацію. Назви файл: Прізвище_Синоніми.',
+ 'На титульному слайді введи заголовок «Слова-синоніми» у поле макета, а в підзаголовок — прізвище, ім’я й клас.',
+ 'Додай слайд із макетом «Пустий» (Слайд → Застосувати макет). Вставлення → WordArt: введи «Синоніми» та перетягни об’єкт угору слайда як заголовок.',
+ 'Вставлення → Текстове поле. Накресли три поля й введи в них слова: Хуртовина, Завірюха, Заметіль. Розмісти їх рівно, у ряд.',
+ 'Додай слайд «Пустий». Створи об’єкт WordArt «Сонечко» та ще два текстових поля з власними прикметниками до цього слова (наприклад, лагідне, золоте).',
+ 'Скопіюй з будь-якої вебсторінки одне речення про зиму або сонце (до 15 слів) і встав у текстове поле (Ctrl + V). Нижче додай маленьке поле: «Джерело: адреса сайту».',
+ 'Потренуйся: перемісти одне поле, зміни його розмір за кутовим маркером, поверни за маркером обертання. Зайве поле видали клавішею Delete.',
+ 'Перевір набір тексту: немає подвійних пропусків і пропусків перед розділовими знаками.',
+ 'Запусти показ (кнопка «Показ слайдів» або Ctrl + F5). Налаштуй доступ: «Усі, хто має посилання» → «Читач». Встав посилання в поле нижче.'];
+var CHECKS=['Є поле заголовка макета на титульному слайді','Використано об’єкт WordArt','Є щонайменше три додаткових текстових поля','Текст набрано за правилами (без зайвих пропусків)','Є вставлений із вебсторінки фрагмент і підпис джерела','Тексту небагато, розмір символів не менше 24'];
+
+/* ---------- scoring ---------- */
+function sc1(){var d=state.a.T1i||0,w=state.a.T1w||0;return d>=T1.length?Math.max(0,T1.length-w):0}
+function scP(id){var n=0,P=PICKS[id];P.items.forEach(function(r,i){if(state.a[id+'.'+i]===r[1])n++});return n}
+function sc4(){var n=0;T4.forEach(function(r,i){if(Number(state.a['T4.'+i])===r[1])n++});return n}
+var MAX=4+5+6+4+4;
+function total(){return sc1()+(state.c.T2?scP('T2'):0)+(state.c.T3?scP('T3'):0)+(state.c.T4?sc4():0)+(state.c.T5?scP('T5'):0)}
+function urlOk(v){return /^https:\/\/docs\.google\.com\/presentation\/\S+/i.test((v||'').trim())}
+function stepsDone(){return STEPS.every(function(_,i){return state.a['P.s'+i]})}
+function pDone(){return stepsDone()&&urlOk(state.a['P.url'])}
+
+/* ---------- renderers ---------- */
+function theory(){return '<section class="card" id="theory"><span class="tag">⏱ ~7 хв</span><span class="tag">Теорія</span><h2>📖 Що треба знати</h2><div class="grid">'+
+ '<div class="box"><b>Текстові поля макета</b>У макеті слайда є поля для заголовка, підзаголовка й тексту слайда. Їх називають покажчиками місця заповнення.</div>'+
+ '<div class="box"><b>Текстове поле</b>Додатковий об’єкт: у ньому розміщують текст у будь-якому місці слайда, наприклад під зображенням.</div>'+
+ '<div class="box"><b>Об’єкт WordArt</b>Текст із художнім оформленням. Ним виділяють головне поняття або заголовок слайда.</div></div>'+
+ '<h3>Як вставити текстовий об’єкт у Google Презентаціях</h3><ol><li>Вставлення → <b>Текстове поле</b> (або <b>WordArt</b>).</li><li>Накресли поле мишею на слайді (для WordArt — введи текст).</li><li>Введи текст.</li><li>Клацни на слайді поза об’єктом.</li></ol>'+
+ '<h3>Правила введення тексту</h3><ul><li>Між словами — лише один пропуск.</li><li>Перед розділовими знаками (; : . , ! ?) пропуск не ставлять, після них — один пропуск.</li><li>Після відкриваючої й перед закриваючою дужкою чи лапкою пропуск не ставлять.</li><li>Дефіс у словах — без пропусків, а тире — з пропусками навколо.</li><li>Новий абзац — клавіша Enter.</li></ul>'+
+ '<h3>Текст із Буфера обміну</h3><p>Скопіюй фрагмент (Ctrl + C) і встав у текстовий об’єкт (Ctrl + V). Не забудь указати <b>джерело</b>.</p>'+
+ '<h3>Дії з об’єктом</h3><p>Перемістити — перетягнути за межу. Змінити розмір — за маркери на межі й у кутах. Повернути — за круглий маркер обертання. Видалити — Delete.</p>'+
+ '<div class="box"><b>Пам’ятай</b>На слайді має бути мало тексту (до 6–8 рядків) і короткі фрази.</div></section>'}
+function t1Html(){var i=state.a.T1i||0,g=state.a.T1g||[],w=state.a.T1w||0,done=i>=T1.length;var c=function(o){return g.indexOf(o)>-1?'g':''};
+ var h='<section class="card'+(done?' done':'')+'" id="T1"><span class="tag">⏱ ~3 хв</span><span class="tag">Автоперевірка</span><h2>🔍 1. Які тут текстові об’єкти?</h2>';
+ h+=done?'<p class="res">✓ Усе знайдено. Помилок: '+w+'. Балів: '+sc1()+' з 4.</p>':'<p><b>Клацни на слайді:</b> '+esc(T1[i][1])+'</p>';
+ h+='<div class="slide click"><div data-o="ph" class="h ph '+c('ph')+'">Синоніми до слова «хуртовина»</div><div data-o="wa" class="wa '+c('wa')+'" style="position:absolute;right:5%;top:8%">ЗИМА</div><div style="display:flex;gap:14px;margin-top:10px"><div data-o="body" class="'+c('body')+'" style="flex:1;font-size:16px;border:1px dashed #9aa3bf;padding:6px">• завірюха<br>• заметіль<br>• віхола</div><div style="width:36%;text-align:center"><div style="background:#dbe6ff;font-size:36px;border-radius:6px">🌨️</div><div data-o="tb" class="sh '+c('tb')+'">Хуртовина</div></div></div></div>';
+ return h+'</section>'}
+function pickHtml(id){var P=PICKS[id],att=state.c[id]||0,n=scP(id),h='<section class="card'+(att&&n===P.items.length?' done':'')+'" id="'+id+'"><span class="tag">⏱ ~'+P.min+' хв</span><span class="tag">Автоперевірка</span><h2>'+P.ico+' '+esc(P.title)+'</h2><p class="small">'+esc(P.intro)+'</p>';
+ P.items.forEach(function(r,i){var v=state.a[id+'.'+i],cls='',fb='';if(att&&v!=null){var ok=v===r[1];cls=ok?' ok':' bad';fb=ok?'✓ Правильно. '+esc(P.why[i]):(att>=2?'✗ '+esc(P.why[i]):'✗ Подумай ще раз.')}else if(att)cls=' bad',fb='Відповідь не обрано.';
+  h+='<div class="it'+cls+'"><p>'+(i+1)+'. '+(P.mono?'<code>'+esc(r[0])+'</code>':esc(r[0]))+'</p><div class="chips">'+P.labels.map(function(l,j){return '<label><input type="radio" name="'+id+'.'+i+'" data-k="'+id+'.'+i+'" value="'+j+'"'+(v===j?' checked':'')+'> '+esc(l)+'</label>'}).join('')+'</div>'+(fb?'<p class="fb">'+fb+'</p>':'')+'</div>'});
+ h+='<button data-act="check" data-t="'+id+'">Перевірити</button>';if(att)h+='<span class="res">Результат: '+n+' з '+P.items.length+'</span>';return h+'</section>'}
+function t4Html(){var att=state.c.T4||0,n=sc4(),h='<section class="card'+(att&&n===4?' done':'')+'" id="T4"><span class="tag">⏱ ~2 хв</span><span class="tag">Автоперевірка</span><h2>🔢 4. Як вставити текстове поле</h2><p class="small">Постав кроки в правильному порядку (1–4).</p>';
+ T4.forEach(function(r,i){var v=state.a['T4.'+i],cls='',fb='';if(att&&v){var ok=Number(v)===r[1];cls=ok?' ok':' bad';fb=ok?'✓':'✗'}
+  h+='<div class="it'+cls+'"><label class="f" style="margin:0"><span>'+esc(r[0])+' '+fb+'</span><select data-k="T4.'+i+'" style="max-width:160px"><option value="">№</option>'+[1,2,3,4].map(function(k){return '<option'+(String(v)===String(k)?' selected':'')+'>'+k+'</option>'}).join('')+'</select></label></div>'});
+ h+='<button data-act="check" data-t="T4">Перевірити</button>';if(att)h+='<span class="res">Результат: '+n+' з 4</span>';return h+'</section>'}
+function pHtml(){var h='<section class="card'+(pDone()?' done':'')+'" id="P"><span class="tag">⏱ ~18 хв</span><span class="tag">Практична робота</span><h2>💻 6. Працюємо в Google Презентаціях</h2><p class="small">Увага! Дотримуйся вимог безпеки в кабінеті інформатики. Виконуй кроки по черзі й став галочки. Назви команд можуть трохи відрізнятися залежно від мови інтерфейсу.</p>';
+ STEPS.forEach(function(s,i){h+='<label class="opt"><input type="checkbox" data-bool="P.s'+i+'"'+(state.a['P.s'+i]?' checked':'')+'> <span><b>'+(i+1)+'.</b> '+esc(s)+'</span></label>'});
+ h+='<label class="f"><span>Посилання на твою презентацію</span><input type="url" placeholder="https://docs.google.com/presentation/…" data-k="P.url" value="'+esc(state.a['P.url'])+'"></label><p class="small" id="urlhint">'+(urlOk(state.a['P.url'])?'✓ Посилання виглядає правильно.':'Встав адресу, що починається з https://docs.google.com/presentation/')+'</p>';
+ var rq=state.a['P.req']||[];h+='<h3 style="margin-top:12px">Перевір свою роботу</h3>'+CHECKS.map(function(r,j){return '<label class="opt" style="padding:4px 10px"><input type="checkbox" data-k="P.req" data-opt="'+(j+1)+'"'+(rq.indexOf(j+1)>-1?' checked':'')+'> <span>'+r+'</span></label>'}).join('');return h+'</section>'}
+function rHtml(){return '<section class="card" id="R"><span class="tag">⏱ ~3 хв</span><span class="tag">Рефлексія</span><h2>💭 7. Підсумок</h2><label class="f"><span>Які текстові об’єкти можна вставити на слайд і для чого вони потрібні?</span><textarea data-k="R.a">'+esc(state.a['R.a'])+'</textarea></label><label class="f"><span>Що було найважче під час роботи?</span><textarea data-k="R.b">'+esc(state.a['R.b'])+'</textarea></label><label class="f"><span>Оціни свою роботу</span><select data-k="R.s"><option value="">— обери —</option>'+[1,2,3,4,5].map(function(n){return '<option'+(String(state.a['R.s'])===String(n)?' selected':'')+'>'+n+'</option>'}).join('')+'</select></label></section>'}
+function resHtml(){return '<section class="card" id="res"><h2>🏆 Результат</h2><p>Автоперевірка: <b>'+total()+' з '+MAX+'</b> балів. Практичну частину й рефлексію оцінює вчитель.</p><button class="ghost" data-act="copy">Показати результат для копіювання</button><button class="ghost" data-act="print">Друк / PDF</button><button class="ghost" data-act="reset">Почати спочатку</button><div id="out"></div></section>'}
+function render(){var h='';
+ if(!storageOk)h+='<div class="card" style="background:var(--soft)">⚠️ Браузер не дозволяє зберігати дані. Не оновлюй сторінку, а наприкінці скопіюй результат.</div>';
+ h+='<div class="hero"><span class="badge">Інформатика · 5 клас · Тема 3</span><h1>Вставлення текстових об’єктів на слайди</h1><p>Відповіді зберігаються автоматично.</p></div>';
+ h+='<section class="card"><label class="f"><span>Прізвище та ім’я</span><input type="text" data-k="name" value="'+esc(state.name)+'"></label><label class="f"><span>Клас</span><input type="text" data-k="cls" value="'+esc(state.cls)+'"></label></section>';
+ h+=theory()+t1Html()+pickHtml('T2')+pickHtml('T3')+t4Html()+pickHtml('T5')+pHtml()+rHtml()+resHtml();
+ document.getElementById('app').innerHTML=h;progress()}
+function progress(){var d=0;if((state.a.T1i||0)>=T1.length)d++;['T2','T3','T4','T5'].forEach(function(k){if(state.c[k])d++});if(pDone())d++;if((state.a['R.a']||'').trim().length>5&&(state.a['R.b']||'').trim().length>5)d++;
+ document.getElementById('fill').style.width=Math.round(d/7*100)+'%';document.getElementById('prog').textContent=d+' з 7 завдань';document.getElementById('who').textContent=state.name||'Текстові об’єкти'}
+function refresh(id,fn){var el=document.getElementById(id),t=document.createElement('div'),y=window.scrollY;t.innerHTML=fn();el.replaceWith(t.firstChild);window.scrollTo(0,y);progress();var r=document.getElementById('res');if(r){var t2=document.createElement('div');t2.innerHTML=resHtml();r.replaceWith(t2.firstChild)}}
+function report(){var L=['Вставлення текстових об’єктів на слайди. 5 клас','Учень: '+state.name+', '+(state.cls||'—'),'Автоперевірка: '+total()+' з '+MAX,'  1 Об’єкти на слайді: '+sc1()+'/4','  2 Вибір об’єкта: '+(state.c.T2?scP('T2'):'—')+'/5','  3 Коректор: '+(state.c.T3?scP('T3'):'—')+'/6','  4 Порядок кроків: '+(state.c.T4?sc4():'—')+'/4','  5 Дії з об’єктом: '+(state.c.T5?scP('T5'):'—')+'/4','',
+ 'Практична робота: кроків виконано '+STEPS.filter(function(_,i){return state.a['P.s'+i]}).length+' з '+STEPS.length,'Посилання: '+(state.a['P.url']||'—'),'Самоперевірка: '+((state.a['P.req']||[]).length)+' з '+CHECKS.length,'','Рефлексія:','  Об’єкти: '+(state.a['R.a']||'—'),'  Складнощі: '+(state.a['R.b']||'—'),'  Самооцінка: '+(state.a['R.s']||'—')];return L.join('\n')}
+
+/* ---------- events ---------- */
+document.addEventListener('input',onChange);document.addEventListener('change',onChange);
+function onChange(e){var el=e.target,d=el.dataset||{};
+ if(d.bool){state.a[d.bool]=el.checked;save();progress();var c=document.getElementById('P');if(c)c.classList.toggle('done',pDone());return}
+ var k=d.k;if(!k)return;
+ if(k==='name'||k==='cls'){state[k]=el.value;save();progress();return}
+ if(el.type==='checkbox'){var arr=Array.isArray(state.a[k])?state.a[k].slice():[],j=Number(d.opt),ix=arr.indexOf(j);if(el.checked&&ix<0)arr.push(j);if(!el.checked&&ix>-1)arr.splice(ix,1);state.a[k]=arr}
+ else if(el.type==='radio')state.a[k]=Number(el.value);else state.a[k]=el.value;
+ save();progress();
+ if(k==='P.url'){var h=document.getElementById('urlhint');if(h)h.textContent=urlOk(el.value)?'✓ Посилання виглядає правильно.':'Встав адресу, що починається з https://docs.google.com/presentation/';var c2=document.getElementById('P');if(c2)c2.classList.toggle('done',pDone())}}
+document.addEventListener('click',function(e){
+ var o=e.target.closest('[data-o]');if(o&&o.closest('.slide.click')){var i=state.a.T1i||0;if(i>=T1.length)return;
+  if(o.dataset.o===T1[i][0]){state.a.T1g=(state.a.T1g||[]).concat(o.dataset.o);state.a.T1i=i+1}else state.a.T1w=(state.a.T1w||0)+1;
+  save();refresh('T1',t1Html);return}
+ var b=e.target.closest('[data-act]');if(!b)return;var act=b.dataset.act;
+ if(act==='check'){var id=b.dataset.t;state.c[id]=(state.c[id]||0)+1;save();refresh(id,id==='T4'?t4Html:function(){return pickHtml(id)});return}
+ if(act==='print'){window.print();return}
+ if(act==='copy'){var w=document.getElementById('out');w.innerHTML='<textarea readonly style="min-height:200px;font-size:14px;font-family:Consolas,monospace"></textarea><button data-act="doCopy">Скопіювати</button>';var ta=w.querySelector('textarea');ta.value=report();ta.select();return}
+ if(act==='doCopy'){var t=document.querySelector('#out textarea');t.select();try{navigator.clipboard.writeText(t.value)}catch(x){document.execCommand('copy')}b.textContent='Скопійовано ✓';return}
+ if(act==='reset'){if(confirm('Стерти всі відповіді й почати спочатку?')){state={a:{},c:{},name:'',cls:''};save();render();window.scrollTo(0,0)}}});
+render();
+</script>
+</body>
+</html>
