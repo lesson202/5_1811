@@ -56,13 +56,14 @@ button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line
 </style>
 </head>
 <body>
-<div class="top"><div class="row"><b id="who">Текстові об’єкти</b><div class="bar"><i id="fill"></i></div><span class="small" id="prog"></span></div></div>
+<div class="top"><div class="row"><b id="who">Текстові об’єкти</b><div class="bar"><i id="fill"></i></div><span class="small" id="prog"></span><button class="ghost" data-act="reset" style="margin:0;padding:4px 12px">🧹 Очистити все</button></div></div>
 <main id="app"></main>
 <script>
 var LS='tekst_5kl_v1',storageOk=true;
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 var state={a:{},c:{},name:'',cls:''};
 try{var s=localStorage.getItem(LS);if(s)state=Object.assign(state,JSON.parse(s))}catch(e){storageOk=false}
+function clearTask(id){Object.keys(state.a).forEach(function(k){if(k.indexOf(id+'.')===0)delete state.a[k]});delete state.c[id];if(id==='T1'){delete state.a.T1i;delete state.a.T1g;delete state.a.T1w}}
 function save(){try{localStorage.setItem(LS,JSON.stringify(state))}catch(e){storageOk=false}}
 
 /* ---------- data ---------- */
@@ -118,20 +119,20 @@ function t1Html(){var i=state.a.T1i||0,g=state.a.T1g||[],w=state.a.T1w||0,done=i
  var h='<section class="card'+(done?' done':'')+'" id="T1"><span class="tag">⏱ ~3 хв</span><span class="tag">Автоперевірка</span><h2>🔍 1. Які тут текстові об’єкти?</h2>';
  h+=done?'<p class="res">✓ Усе знайдено. Помилок: '+w+'. Балів: '+sc1()+' з 4.</p>':'<p><b>Клацни на слайді:</b> '+esc(T1[i][1])+'</p>';
  h+='<div class="slide click"><div data-o="ph" class="h ph '+c('ph')+'">Синоніми до слова «хуртовина»</div><div data-o="wa" class="wa '+c('wa')+'" style="position:absolute;right:5%;top:8%">ЗИМА</div><div style="display:flex;gap:14px;margin-top:10px"><div data-o="body" class="'+c('body')+'" style="flex:1;font-size:16px;border:1px dashed #9aa3bf;padding:6px">• завірюха<br>• заметіль<br>• віхола</div><div style="width:36%;text-align:center"><div style="background:#dbe6ff;font-size:36px;border-radius:6px">🌨️</div><div data-o="tb" class="sh '+c('tb')+'">Хуртовина</div></div></div></div>';
- return h+'</section>'}
+ return h+'<button class="ghost" data-act="clr" data-t="T1">🧹 Очистити</button></section>'}
 function pickHtml(id){var P=PICKS[id],att=state.c[id]||0,n=scP(id),h='<section class="card'+(att&&n===P.items.length?' done':'')+'" id="'+id+'"><span class="tag">⏱ ~'+P.min+' хв</span><span class="tag">Автоперевірка</span><h2>'+P.ico+' '+esc(P.title)+'</h2><p class="small">'+esc(P.intro)+'</p>';
  P.items.forEach(function(r,i){var v=state.a[id+'.'+i],cls='',fb='';if(att&&v!=null){var ok=v===r[1];cls=ok?' ok':' bad';fb=ok?'✓ Правильно. '+esc(P.why[i]):(att>=2?'✗ '+esc(P.why[i]):'✗ Подумай ще раз.')}else if(att)cls=' bad',fb='Відповідь не обрано.';
   h+='<div class="it'+cls+'"><p>'+(i+1)+'. '+(P.mono?'<code>'+esc(r[0])+'</code>':esc(r[0]))+'</p><div class="chips">'+P.labels.map(function(l,j){return '<label><input type="radio" name="'+id+'.'+i+'" data-k="'+id+'.'+i+'" value="'+j+'"'+(v===j?' checked':'')+'> '+esc(l)+'</label>'}).join('')+'</div>'+(fb?'<p class="fb">'+fb+'</p>':'')+'</div>'});
- h+='<button data-act="check" data-t="'+id+'">Перевірити</button>';if(att)h+='<span class="res">Результат: '+n+' з '+P.items.length+'</span>';return h+'</section>'}
+ h+='<button data-act="check" data-t="'+id+'">Перевірити</button><button class="ghost" data-act="clr" data-t="'+id+'">🧹 Очистити</button>';if(att)h+='<span class="res">Результат: '+n+' з '+P.items.length+'</span>';return h+'</section>'}
 function t4Html(){var att=state.c.T4||0,n=sc4(),h='<section class="card'+(att&&n===4?' done':'')+'" id="T4"><span class="tag">⏱ ~2 хв</span><span class="tag">Автоперевірка</span><h2>🔢 4. Як вставити текстове поле</h2><p class="small">Постав кроки в правильному порядку (1–4).</p>';
  T4.forEach(function(r,i){var v=state.a['T4.'+i],cls='',fb='';if(att&&v){var ok=Number(v)===r[1];cls=ok?' ok':' bad';fb=ok?'✓':'✗'}
   h+='<div class="it'+cls+'"><label class="f" style="margin:0"><span>'+esc(r[0])+' '+fb+'</span><select data-k="T4.'+i+'" style="max-width:160px"><option value="">№</option>'+[1,2,3,4].map(function(k){return '<option'+(String(v)===String(k)?' selected':'')+'>'+k+'</option>'}).join('')+'</select></label></div>'});
- h+='<button data-act="check" data-t="T4">Перевірити</button>';if(att)h+='<span class="res">Результат: '+n+' з 4</span>';return h+'</section>'}
+ h+='<button data-act="check" data-t="T4">Перевірити</button><button class="ghost" data-act="clr" data-t="T4">🧹 Очистити</button>';if(att)h+='<span class="res">Результат: '+n+' з 4</span>';return h+'</section>'}
 function pHtml(){var h='<section class="card'+(pDone()?' done':'')+'" id="P"><span class="tag">⏱ ~18 хв</span><span class="tag">Практична робота</span><h2>💻 6. Працюємо в Google Презентаціях</h2><p class="small">Увага! Дотримуйся вимог безпеки в кабінеті інформатики. Виконуй кроки по черзі й став галочки. Назви команд можуть трохи відрізнятися залежно від мови інтерфейсу.</p>';
  STEPS.forEach(function(s,i){h+='<label class="opt"><input type="checkbox" data-bool="P.s'+i+'"'+(state.a['P.s'+i]?' checked':'')+'> <span><b>'+(i+1)+'.</b> '+esc(s)+'</span></label>'});
  h+='<label class="f"><span>Посилання на твою презентацію</span><input type="url" placeholder="https://docs.google.com/presentation/…" data-k="P.url" value="'+esc(state.a['P.url'])+'"></label><p class="small" id="urlhint">'+(urlOk(state.a['P.url'])?'✓ Посилання виглядає правильно.':'Встав адресу, що починається з https://docs.google.com/presentation/')+'</p>';
- var rq=state.a['P.req']||[];h+='<h3 style="margin-top:12px">Перевір свою роботу</h3>'+CHECKS.map(function(r,j){return '<label class="opt" style="padding:4px 10px"><input type="checkbox" data-k="P.req" data-opt="'+(j+1)+'"'+(rq.indexOf(j+1)>-1?' checked':'')+'> <span>'+r+'</span></label>'}).join('');return h+'</section>'}
-function rHtml(){return '<section class="card" id="R"><span class="tag">⏱ ~3 хв</span><span class="tag">Рефлексія</span><h2>💭 7. Підсумок</h2><label class="f"><span>Які текстові об’єкти можна вставити на слайд і для чого вони потрібні?</span><textarea data-k="R.a">'+esc(state.a['R.a'])+'</textarea></label><label class="f"><span>Що було найважче під час роботи?</span><textarea data-k="R.b">'+esc(state.a['R.b'])+'</textarea></label><label class="f"><span>Оціни свою роботу</span><select data-k="R.s"><option value="">— обери —</option>'+[1,2,3,4,5].map(function(n){return '<option'+(String(state.a['R.s'])===String(n)?' selected':'')+'>'+n+'</option>'}).join('')+'</select></label></section>'}
+ var rq=state.a['P.req']||[];h+='<h3 style="margin-top:12px">Перевір свою роботу</h3>'+CHECKS.map(function(r,j){return '<label class="opt" style="padding:4px 10px"><input type="checkbox" data-k="P.req" data-opt="'+(j+1)+'"'+(rq.indexOf(j+1)>-1?' checked':'')+'> <span>'+r+'</span></label>'}).join('');return h+'<button class="ghost" data-act="clr" data-t="P">🧹 Очистити</button></section>'}
+function rHtml(){return '<section class="card" id="R"><span class="tag">⏱ ~3 хв</span><span class="tag">Рефлексія</span><h2>💭 7. Підсумок</h2><label class="f"><span>Які текстові об’єкти можна вставити на слайд і для чого вони потрібні?</span><textarea data-k="R.a">'+esc(state.a['R.a'])+'</textarea></label><label class="f"><span>Що було найважче під час роботи?</span><textarea data-k="R.b">'+esc(state.a['R.b'])+'</textarea></label><label class="f"><span>Оціни свою роботу</span><select data-k="R.s"><option value="">— обери —</option>'+[1,2,3,4,5].map(function(n){return '<option'+(String(state.a['R.s'])===String(n)?' selected':'')+'>'+n+'</option>'}).join('')+'</select></label><button class="ghost" data-act="clr" data-t="R">🧹 Очистити</button></section>'}
 function resHtml(){return '<section class="card" id="res"><h2>🏆 Результат</h2><p>Автоперевірка: <b>'+total()+' з '+MAX+'</b> балів. Практичну частину й рефлексію оцінює вчитель.</p><button class="ghost" data-act="copy">Показати результат для копіювання</button><button class="ghost" data-act="print">Друк / PDF</button><button class="ghost" data-act="reset">Почати спочатку</button><div id="out"></div></section>'}
 function render(){var h='';
  if(!storageOk)h+='<div class="card" style="background:var(--soft)">⚠️ Браузер не дозволяє зберігати дані. Не оновлюй сторінку, а наприкінці скопіюй результат.</div>';
@@ -161,10 +162,11 @@ document.addEventListener('click',function(e){
   save();refresh('T1',t1Html);return}
  var b=e.target.closest('[data-act]');if(!b)return;var act=b.dataset.act;
  if(act==='check'){var id=b.dataset.t;state.c[id]=(state.c[id]||0)+1;save();refresh(id,id==='T4'?t4Html:function(){return pickHtml(id)});return}
+ if(act==='clr'){if(!confirm('Очистити це завдання?'))return;clearTask(b.dataset.t);save();var yy=window.scrollY;render();window.scrollTo(0,yy);return}
  if(act==='print'){window.print();return}
  if(act==='copy'){var w=document.getElementById('out');w.innerHTML='<textarea readonly style="min-height:200px;font-size:14px;font-family:Consolas,monospace"></textarea><button data-act="doCopy">Скопіювати</button>';var ta=w.querySelector('textarea');ta.value=report();ta.select();return}
  if(act==='doCopy'){var t=document.querySelector('#out textarea');t.select();try{navigator.clipboard.writeText(t.value)}catch(x){document.execCommand('copy')}b.textContent='Скопійовано ✓';return}
- if(act==='reset'){if(confirm('Стерти всі відповіді й почати спочатку?')){state={a:{},c:{},name:'',cls:''};save();render();window.scrollTo(0,0)}}});
+ if(act==='reset'){if(confirm('Очистити всі відповіді й почати спочатку?')){state={a:{},c:{},name:'',cls:''};save();render();window.scrollTo(0,0)}}});
 render();
 </script>
 </body>
